@@ -32,6 +32,26 @@
           pkgs,
           ...
         }:
+        let
+          buildInputs = lib.optionals pkgs.stdenv.isLinux [
+            pkgs.alsa-lib
+            pkgs.pulseaudio
+            pkgs.pipewire
+          ];
+
+          SMAP = pkgs.stdenv.mkDerivation {
+            name = "SMAP";
+            src = lib.cleanSource ./.;
+
+            inherit buildInputs;
+            nativeBuildInputs = [
+              pkgs.pkg-config
+              pkgs.zig_0_15.hook
+            ];
+
+            doCheck = true;
+          };
+        in
         {
           treefmt = {
             projectRootFile = ".git/config";
@@ -54,13 +74,17 @@
             programs.shfmt.enable = true;
           };
 
-          devShells.default = pkgs.mkShell {
-            buildInputs = lib.optionals pkgs.stdenv.isLinux [
-              pkgs.alsa-lib
-              pkgs.pulseaudio
-              pkgs.pipewire
-            ];
+          packages = {
+            inherit SMAP;
+            default = SMAP;
+          };
 
+          checks = {
+            inherit SMAP;
+          };
+
+          devShells.default = pkgs.mkShell {
+            inherit buildInputs;
             nativeBuildInputs = [
               pkgs.zig_0_15 # Zig compiler
               pkgs.pkg-config # pkg-config

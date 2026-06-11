@@ -10,6 +10,9 @@ pub fn build(b: *std.Build) void {
         .target = target,
     });
 
+    // Run step
+    const run_step = b.step("run", "Run the default app");
+
     // SMAP CLI
     const cli = b.addExecutable(.{
         .name = "smap",
@@ -23,6 +26,8 @@ pub fn build(b: *std.Build) void {
         }),
     });
     b.installArtifact(cli);
+    const run_cli_step = add_run_step(b, cli, "run-cli", "Run the SMAP CLI");
+    run_step.dependOn(run_cli_step); // The default app is the SMAP CLI
 
     // SMAP Daemon
     const daemon = b.addExecutable(.{
@@ -37,6 +42,7 @@ pub fn build(b: *std.Build) void {
         }),
     });
     b.installArtifact(daemon);
+    _ = add_run_step(b, daemon, "run-daemon", "Run the SMAP Daemon");
 
     // Tests
     const mod_tests = b.addTest(.{
@@ -59,16 +65,21 @@ pub fn build(b: *std.Build) void {
     test_step.dependOn(&run_mod_tests.step);
     test_step.dependOn(&run_cli_tests.step);
     test_step.dependOn(&run_daemon_tests.step);
+}
 
-    // Just like flags, top level steps are also listed in the `--help` menu.
-    //
-    // The Zig build system is entirely implemented in userland, which means
-    // that it cannot hook into private compiler APIs. All compilation work
-    // orchestrated by the build system will result in other Zig compiler
-    // subcommands being invoked with the right flags defined. You can observe
-    // these invocations when one fails (or you pass a flag to increase
-    // verbosity) to validate assumptions and diagnose problems.
-    //
-    // Lastly, the Zig build system is relatively simple and self-contained,
-    // and reading its source code will allow you to master it.
+fn add_run_step(
+    b: *std.Build,
+    exe: *std.Build.Step.Compile,
+    name: []const u8,
+    description: []const u8,
+) *std.Build.Step {
+    var run_exe_step = b.step(name, description);
+    const run_cmd = b.addRunArtifact(exe);
+    run_exe_step.dependOn(&run_cmd.step);
+    run_cmd.step.dependOn(b.getInstallStep());
+    if (b.args) |args| {
+        run_cmd.addArgs(args);
+    }
+
+    return run_exe_step;
 }

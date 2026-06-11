@@ -7,6 +7,10 @@ const allocator = gpa.allocator();
 const Flags = struct {
     version: bool = false,
 
+    pub const descriptions = .{
+        .version = "Displays this CLI's Version",
+    };
+
     pub const switches = .{
         .version = 'V',
     };

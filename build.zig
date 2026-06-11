@@ -4,10 +4,14 @@ pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
+    // Dependencies
+    const flags = b.dependency("flags", .{});
+
     // Library
     const mod = b.addModule("SMAP", .{
         .root_source_file = b.path("src/smap.zig"),
         .target = target,
+        .optimize = optimize,
     });
 
     // Run step
@@ -22,6 +26,7 @@ pub fn build(b: *std.Build) void {
             .optimize = optimize,
             .imports = &.{
                 .{ .name = "SMAP", .module = mod },
+                .{ .name = "flags", .module = flags.module("flags") },
             },
         }),
     });
@@ -38,6 +43,7 @@ pub fn build(b: *std.Build) void {
             .optimize = optimize,
             .imports = &.{
                 .{ .name = "SMAP", .module = mod },
+                .{ .name = "flags", .module = flags.module("flags") },
             },
         }),
     });

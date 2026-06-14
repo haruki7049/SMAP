@@ -4,7 +4,7 @@ use std::net::SocketAddr;
 use std::path::Path;
 
 pub mod local;
-pub mod remote;
+pub mod sender;
 
 pub trait AudioPlayer {
     type Error;

@@ -10,19 +10,19 @@ use std::path::Path;
 use thiserror::Error;
 
 #[derive(Debug)]
-pub struct RemoteAudioPlayer {
+pub struct Sender {
     volume: Volume,
     socket: SocketAddr,
 }
 
-impl RemoteAudioPlayer {
+impl Sender {
     pub fn new(volume: Volume, socket: SocketAddr) -> Self {
         Self { volume, socket }
     }
 }
 
 #[derive(Debug, Error)]
-pub enum RemoteAudioPlayerError {
+pub enum SenderError {
     #[error("IO error from std crate: {0}")]
     Io(#[from] std::io::Error),
 
@@ -30,8 +30,8 @@ pub enum RemoteAudioPlayerError {
     SerdeEncoding(#[from] serde_json::Error),
 }
 
-impl AudioPlayer for RemoteAudioPlayer {
-    type Error = RemoteAudioPlayerError;
+impl AudioPlayer for Sender {
+    type Error = SenderError;
 
     fn play(&self, filepath: &Path) -> Result<(), Self::Error> {
         let volume = self.volume;

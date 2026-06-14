@@ -2,7 +2,7 @@ use clap::Parser;
 use smap::cli::CLIArgs;
 use smap::players::AudioPlayer;
 use smap::players::local::LocalAudioPlayer;
-use smap::players::remote::RemoteAudioPlayer;
+use smap::players::sender::Sender;
 use std::net::SocketAddr;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -26,9 +26,9 @@ fn local_play(args: &CLIArgs) -> Result<(), Box<dyn std::error::Error>> {
 }
 
 fn remote_play(args: &CLIArgs, socket: &SocketAddr) -> Result<(), Box<dyn std::error::Error>> {
-    let mut remote_player = RemoteAudioPlayer::new(args.volume, *socket);
-    remote_player.volume(args.volume);
-    remote_player.play(&args.filepath)?;
+    let mut sender = Sender::new(args.volume, *socket);
+    sender.volume(args.volume);
+    sender.play(&args.filepath)?;
 
     todo!()
 }

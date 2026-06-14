@@ -1,10 +1,14 @@
 use std::{fs::File, io::BufReader};
 
+use crate::players::Volume;
+
 use super::AudioPlayer;
 use thiserror::Error;
 
 #[derive(Debug, Default)]
-pub struct LocalAudioPlayer {}
+pub struct LocalAudioPlayer {
+    volume: Volume,
+}
 
 #[derive(Debug, Error)]
 pub enum LocalAudioPlayerError {
@@ -26,8 +30,13 @@ impl AudioPlayer for LocalAudioPlayer {
         sink_handle.log_on_drop(false); // Disable log via sink_handle
         let reader = BufReader::new(File::open(filepath)?);
         let player = rodio::play(&sink_handle.mixer(), reader)?;
+        player.set_volume(self.volume);
         player.sleep_until_end();
 
         Ok(())
+    }
+
+    fn volume(&mut self, volume: Volume) {
+        self.volume = volume;
     }
 }

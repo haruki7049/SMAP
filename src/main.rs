@@ -12,7 +12,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         todo!("The remote play feature has not been implemented yet, args.target: {target}");
     }
 
-    let local_player = LocalAudioPlayer::default();
+    let mut local_player = LocalAudioPlayer::default();
+    local_player.volume(args.volume);
     local_player.play(&args.filepath)?;
 
     Ok(())

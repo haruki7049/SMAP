@@ -2,6 +2,8 @@ use std::{net::SocketAddr, path::PathBuf};
 
 use clap::Parser;
 
+use crate::players::Volume;
+
 #[derive(Parser, Debug)]
 #[clap(version, about, author)]
 pub struct CLIArgs {
@@ -12,4 +14,8 @@ pub struct CLIArgs {
 
     /// An audio file path
     pub filepath: PathBuf,
+
+    /// Play back volume
+    #[arg(short, long, default_value_t = 1.0)]
+    pub volume: Volume,
 }

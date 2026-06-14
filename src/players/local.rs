@@ -2,6 +2,7 @@ use super::AudioPlayer;
 use super::Volume;
 use std::fs::File;
 use std::io::BufReader;
+use std::path::Path;
 use thiserror::Error;
 
 #[derive(Debug, Default)]
@@ -24,11 +25,11 @@ pub enum LocalAudioPlayerError {
 impl AudioPlayer for LocalAudioPlayer {
     type Error = LocalAudioPlayerError;
 
-    fn play(&self, filepath: &std::path::PathBuf) -> Result<(), Self::Error> {
+    fn play(&self, filepath: &Path) -> Result<(), Self::Error> {
         let mut sink_handle = rodio::DeviceSinkBuilder::open_default_sink()?;
         sink_handle.log_on_drop(false); // Disable log via sink_handle
         let reader = BufReader::new(File::open(filepath)?);
-        let player = rodio::play(&sink_handle.mixer(), reader)?;
+        let player = rodio::play(sink_handle.mixer(), reader)?;
         player.set_volume(self.volume);
         player.sleep_until_end();
 

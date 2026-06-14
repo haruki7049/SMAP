@@ -1,4 +1,5 @@
 use std::net::SocketAddr;
+use std::path::Path;
 
 use super::AudioPlayer;
 use super::Volume;
@@ -22,7 +23,7 @@ pub enum RemoteAudioPlayerError {}
 impl AudioPlayer for RemoteAudioPlayer {
     type Error = RemoteAudioPlayerError;
 
-    fn play(&self, filepath: &std::path::PathBuf) -> Result<(), Self::Error> {
+    fn play(&self, filepath: &Path) -> Result<(), Self::Error> {
         todo!()
     }
 

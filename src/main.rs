@@ -4,7 +4,7 @@ use smap::{
     players::{AudioPlayer, local::LocalAudioPlayer},
 };
 
-fn main() {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: CLIArgs = CLIArgs::parse();
     dbg!(&args);
 
@@ -13,5 +13,7 @@ fn main() {
     }
 
     let local_player = LocalAudioPlayer::default();
-    local_player.play(&args.filepath);
+    local_player.play(&args.filepath)?;
+
+    Ok(())
 }

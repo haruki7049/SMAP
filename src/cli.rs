@@ -1,4 +1,4 @@
-use std::net::SocketAddr;
+use std::{net::SocketAddr, path::PathBuf};
 
 use clap::Parser;
 
@@ -7,4 +7,6 @@ use clap::Parser;
 pub struct CLIArgs {
     #[arg(short, long)]
     target: SocketAddr,
+
+    file: PathBuf,
 }

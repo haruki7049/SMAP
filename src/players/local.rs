@@ -22,7 +22,8 @@ impl AudioPlayer for LocalAudioPlayer {
     type Error = LocalAudioPlayerError;
 
     fn play(&self, filepath: &std::path::PathBuf) -> Result<(), Self::Error> {
-        let sink_handle = rodio::DeviceSinkBuilder::open_default_sink()?;
+        let mut sink_handle = rodio::DeviceSinkBuilder::open_default_sink()?;
+        sink_handle.log_on_drop(false); // Disable log via sink_handle
         let reader = BufReader::new(File::open(filepath)?);
         let player = rodio::play(&sink_handle.mixer(), reader)?;
         player.sleep_until_end();

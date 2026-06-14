@@ -1,7 +1,17 @@
 use clap::Parser;
-use smap::cli::CLIArgs;
+use smap::{
+    cli::CLIArgs,
+    players::{AudioPlayer, local::LocalAudioPlayer},
+};
 
 fn main() {
     let args: CLIArgs = CLIArgs::parse();
-    dbg!(args);
+    dbg!(&args);
+
+    if let Some(target) = args.target {
+        todo!("The remote play feature has not been implemented yet, args.target: {target}");
+    }
+
+    let local_player = LocalAudioPlayer::default();
+    local_player.play(&args.filepath);
 }

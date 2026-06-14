@@ -1,8 +1,7 @@
-use std::{fs::File, io::BufReader};
-
-use crate::players::Volume;
-
 use super::AudioPlayer;
+use super::Volume;
+use std::fs::File;
+use std::io::BufReader;
 use thiserror::Error;
 
 #[derive(Debug, Default)]

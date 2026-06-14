@@ -1,6 +1,7 @@
-use std::path::PathBuf;
+use std::{net::SocketAddr, path::PathBuf};
 
 pub mod local;
+pub mod remote;
 
 pub trait AudioPlayer {
     type Error;
